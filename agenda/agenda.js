@@ -25,7 +25,7 @@ const agenda = new Agenda({
 
     await agenda.start();
     console.log("Agenda Started");
-    await agenda.schedule('in 10 seconds', 'print',{a:10});
+    // await agenda.schedule('in 10 seconds', 'print');
   } catch (error) {
     console.error("Error starting Agenda:", error);
   }

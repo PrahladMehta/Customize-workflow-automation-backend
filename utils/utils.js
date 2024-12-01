@@ -1,10 +1,13 @@
 const nodemailer=require("nodemailer");
 const Task=require("../model/Task");
+const User=require("../model/User");
 
 
 async function sendDeadlineMail(taskId){
       try{
       const task=await Task.findOne({_id:taskId});
+      const user=await User.findOne({_id:task.userId});
+      const email=user.email;
       const transporter=nodemailer.createTransport({
             service:"gmail",      
             auth:{
@@ -24,6 +27,7 @@ async function sendDeadlineMail(taskId){
              `, 
          };
          const info=await transporter.sendMail(mailOptions);
+         console.log("Email sent successfully");
       }catch(e){
       console.log("ERROR");
       console.log(e);
