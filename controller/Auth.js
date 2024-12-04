@@ -4,6 +4,7 @@ const jwt=require("jsonwebtoken");
 const bcrypt=require("bcrypt");
 const env=require("dotenv");
 const nodemailer=require("nodemailer");
+const nanoid=require("nanoid");
 
 
 env.config();
@@ -102,6 +103,63 @@ exports.sentOtp=async(req,res)=>{
             console.log("Error");
             console.log(error);
             return res.status(400).json({success:false,message:"Error on otp sent"});
+      }
+
+}
+
+exports.resetPassword=async(req,res)=>{
+      try{
+
+      const {email,password}=req.body;
+
+       if(!email&&!password){
+            return res.status(400).json({success:false,message:"Something went wrong"});
+       }
+
+       const user=await User.findOne({email});  
+       if(!user){
+            return res.status(400).json({success:false,message:"User not found"});
+       }
+       const check=bcrypt.compare(password,user.password);
+       if(check){
+            return res.status(400).json({success:false,message:"Password are not matching"});
+       }
+
+       const hashPassword=await bcrypt.hash(password,10);
+       await User.findByIdAndUpdate(user._id,{password:hashPassword});
+
+       return res.status(200).json({success:true,message:"Password updated successfully"});
+
+
+      }catch(error){
+            console.log("Error on reset password");
+            console.log(error);
+            return res.status(400).json({success:false,message:"Error on reset password"});
+      }
+
+}
+
+
+exports.forgetPasswordSendMail=async(req,res)=>{
+      try{
+
+            const {email}=req.body;
+
+      
+            if(!email){
+                  return res.status(400).json({success:false,message:"email is required"});
+            }
+
+            const user= await User.find({email});
+
+            if(!user){
+                  return res.status(400).json({success:false,message:"User don't exist "});
+            }
+
+            sendForgetPasswordMail(email);
+
+      }catch(error){
+
       }
 
 }

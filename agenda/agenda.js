@@ -8,18 +8,19 @@ const agenda = new Agenda({
   },
 });
 
+//immediately invoke  function expression (iife)
 
 (async function () {
   try { 
     await agenda._ready;
-    agenda.define("print", async (job) => {
-      const {a}=job.attrs.data;
-      console.log("hello",a);
-    });
+    // agenda.define("print", async (job) => {
+    //   const {a}=job.attrs.data;
+    //   console.log("hello",a);
+    // });
 
     agenda.define("sent-mail",async(job)=>{
-         const {taskId}=job.attrs.data;       
-         sendDeadlineMail(taskId);  
+        const {taskId}=job.attrs.data;       
+        sendDeadlineMail(taskId);  
     })
 
 
